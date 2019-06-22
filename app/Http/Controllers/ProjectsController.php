@@ -6,9 +6,15 @@ use App\Project;
 
 class ProjectsController extends Controller
 {
+    // Il est possible de rajouter le middleware dans ce controlleur à la place de le mettre dans le web. 
+    
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
     public function index() {
 
-        $projects = Project::all();
+        $projects = auth()->user()->projects;
 
         return view('projects.index', compact('projects'));
     }
@@ -16,6 +22,10 @@ class ProjectsController extends Controller
     public function show(Project $project){
         
         // $project = Project::findOrFail(request('project')); Remplacé par (Project $project)
+ 
+        if(auth()->user()->isNot($project->owner)){
+            abort(403);
+        }
 
         return view('projects.show', compact('project'));
     }
