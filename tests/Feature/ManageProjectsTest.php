@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ProjectsTest extends TestCase
+class ManageProjectsTest extends TestCase
 {
 
     use WithFaker, RefreshDatabase;
@@ -17,35 +17,32 @@ class ProjectsTest extends TestCase
      */
    
         
-    public function test_guest_cannot_create_projects(){
+    public function test_guest_cannot_manage_projects(){
             
         // $this->withoutExceptionHandling();
 
-        $attributes = factory('App\Project')->raw(['owner_id' => null]);
+        $project = factory('App\Project')->create(); 
+        
+        // Si tu essaie de post tu es redirigé
+        $this->post('/projects', $project->toArray())->assertRedirect('login');
+        
+        // Si tu essaie d'aller sur la page /create tu es redirigé
+        $this->get('/projects/create')->assertRedirect('login');
 
-        $this->post('/projects', $attributes)->assertRedirect('login');
-    }
-    
-    public function test_guest_cannot_view_projects(){
-            
-        // $this->withoutExceptionHandling(); 
-
+        // Si tu essaies d'acceder au dashboard tu es redirigé
         $this->get('/projects')->assertRedirect('login');
-    }
-    
-    public function test_guest_cannot_view_a_single_project(){
-            
-        // $this->withoutExceptionHandling(); 
-        $project = factory('App\Project')->create();
-
+        
+        // Si tu essaies d'acceder a un projet spécifique tu es redirigé
         $this->get($project->path())->assertRedirect('login');
     }
-    
+      
      public function test_a_user_can_create_a_project(){
 
         $this->withoutExceptionHandling();
         
         $this->actingAs(factory('App\User')->create());
+
+        $this->get('/projects/create')->assertStatus(200);
 
         $attributes = [
             'title' => $this->faker->sentence,
