@@ -10,7 +10,7 @@ class ProjectTasksController extends Controller
     /**
      * Add a task to the given project.
      *
-     * @param \App\Project $project
+     * @param Project $project
      * @param Project $project
      * @return \Illuminate\Http\RedirectResponse
      */

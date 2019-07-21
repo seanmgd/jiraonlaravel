@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
 
     public function projects() {
-        return $this->hasMany(Project::class, 'owner_id'); 
+        return $this->hasMany(Project::class, 'owner_id')->latest('updated_at'); 
         // return $this->hasMany(Project::class); par défaut, ça va chercher user_id, mais vu que nous avons owner_id, il faut overrider en mettant une virgule apres la class
     }
 }
